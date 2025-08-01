@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Ice Melting Simulation</title>
+  <style>
+    body {
+      text-align: center;
+      background: linear-gradient(to bottom, #011f4b, #0082c8, #00aaff, #dff6ff);
+      font-family: sans-serif;
+      color: white;
+      padding: 30px;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    #temp {
+      -webkit-appearance: none;
+      width: 60%;
+      height: 15px;
+      border-radius: 10px;
+      background: linear-gradient(to right, blue, red);
+      margin-bottom: 10px;
+    }
+
+    #temp::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid black;
+      cursor: pointer;
+    }
+
+    #showTemp {
+      font-size: 1.2rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    #aiMessage {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 10px 20px;
+      border-radius: 12px;
+      display: inline-block;
+      color: #fff;
+      backdrop-filter: blur(5px);
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    #ice {
+      width: 300px;
+      margin-top: 20px;
+      transition: opacity 1s ease, transform 1s ease;
+      filter: drop-shadow(0 0 10px #00d0ff);
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🧊 Ice Melting Simulation</h2>
+
+  <input type="range" id="temp" min="0" max="100" value="0">
+  <span id="showTemp">0°C</span>
+
+  <div id="aiMessage">I'm frozen solid ❄️</div>
+
+  <img src="ice.png" id="ice" alt="Ice Cube">
+
+  <script>
+    const slider = document.getElementById("temp");
+    const ice = document.getElementById("ice");
+    const showTemp = document.getElementById("showTemp");
+    const messageBox = document.getElementById("aiMessage");
+
+    // Speak title on load
+    window.addEventListener("load", () => {
+      const welcome = new SpeechSynthesisUtterance("Welcome to Ice Melting Simulation");
+      speechSynthesis.cancel();
+      speechSynthesis.speak(welcome);
+    });
+
+    // Update on slider change
+    slider.addEventListener("input", () => {
+      const temp = parseInt(slider.value);
+      showTemp.textContent = temp + "°C";
+
+      // Melting effect
+      ice.style.opacity = 1 - temp / 100;
+      ice.style.transform = `scale(${1 - temp / 200})`;
+
+      // AI-style message
+      let aiText = "I'm frozen solid ❄️";
+      if (temp < 20) aiText = "Cool and solid 🧊";
+      else if (temp < 50) aiText = "Hmm… it’s getting warm ☀️";
+      else if (temp < 90) aiText = "Melting... Save me! 💧";
+      else aiText = "I’m gone 😵‍💫";
+
+      messageBox.textContent = aiText;
+
+      // AI voice response
+      if ('speechSynthesis' in window) {
+        const say = new SpeechSynthesisUtterance(aiText);
+        speechSynthesis.cancel(); // stop any previous speaking
+        speechSynthesis.speak(say);
+      }
+    });
+  </script>
+
+</body>
+</html>
